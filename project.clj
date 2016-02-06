@@ -1,0 +1,11 @@
+(defproject passable "0.1.0-SNAPSHOT"
+  :description "FIXME: write description"
+  :url "http://example.com/FIXME"
+  :license {:name "Eclipse Public License"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :repositories {"local" ~(str (.toURI (java.io.File. "~/.m2/repository")))}
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [caesium "0.4.0-BETA"]] ;; my fork of caesium is installed locally
+  :main ^:skip-aot passable.core
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all}})
