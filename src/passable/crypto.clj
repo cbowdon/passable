@@ -24,9 +24,17 @@
   (let [nonce (generate-nonce)]
     ;; TODO the prepending part
     (secretbox/encrypt key nonce plaintext)))
-  
+
 (defn secretbox-open
   "`secretbox/decrypt` where the ciphertext is prefixed with its nonce."
   [key ciphertext]
-    nil)
-  
+  nil)
+
+(defn zero!
+  "Overwrites mutable byte-array with zeros. 
+
+  Returns the same referenced array, having mutated it."
+  [^bytes b-array]
+  (do
+    (java.util.Arrays/fill b-array (byte 0))
+    b-array))

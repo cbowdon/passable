@@ -33,3 +33,15 @@
       (.getBytes "Caught in a landslide") (generate-secret-key)
       (.getBytes "No escape from reality") (generate-secret-key))))
 
+(deftest zeroing
+  (let [zeros (byte-array [0 0 0 0 0 0 0 0])]
+    (testing "Should return the cleared array"
+      (are [nonzeros] (array-eq zeros (zero! nonzeros))
+        (byte-array [1 2 3 4 5 6 7 8])
+        (byte-array [9 0 1 1 3 0 1 1]))
+      (testing "Should mutate the original array"
+        (are [nonzeros] (let [orig nonzeros]
+                          (zero! orig)
+                          (array-eq orig zeros))
+          (byte-array [1 2 3 4 5 6 7 8])
+          (byte-array [9 0 1 1 3 0 1 1]))))))
