@@ -12,17 +12,24 @@
 ;; Should probably add these to caesium too
 (def secretbox-key-length 32)
 (def secretbox-nonce-length 24)
+(def box-nonce-length 24)
 
 (defn generate-secret-key []
   (random/randombytes secretbox-key-length))
 
-(defn generate-nonce []
+(defn generate-secretbox-nonce []
   (random/randombytes secretbox-nonce-length))
+
+(defn generate-box-nonce []
+  (random/randombytes secretbox-nonce-length))
+
+(defn generate-keypair []
+  (box/generate-keypair))
 
 (defn secretbox
   "`secretbox/encrypt` with a random nonce, prepended to the result."
   [secret-key plaintext]
-  (let [nonce (generate-nonce)
+  (let [nonce (generate-secretbox-nonce)
         ciphertext (secretbox/encrypt secret-key nonce plaintext)]
     (byte-array (concat nonce ciphertext))))
 
@@ -35,6 +42,23 @@
                        nonce
                        ciphertext)))
 
+(defn box
+  "`box/encrypt` with a random nonce, prepended to the result."
+  [recipient-pk sender-sk plaintext]
+  (let [nonce (generate-box-nonce)
+        ciphertext (box/encrypt recipient-pk sender-sk nonce plaintext)]
+    (byte-array (concat nonce ciphertext))))
+
+(defn box-open
+  "`box/decrypt` where the ciphertext is prefixed with its nonce."
+  [sender-pk recipient-sk message]
+  (let [nonce (byte-array (Arrays/copyOfRange message 0 box-nonce-length))
+        ciphertext (byte-array (Arrays/copyOfRange message box-nonce-length (alength message)))]
+    (box/decrypt sender-pk
+                 recipient-sk
+                 nonce
+                 ciphertext)))
+    
 (defn zero!
   "Overwrites mutable byte-array with zeros.
 
