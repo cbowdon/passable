@@ -1,4 +1,5 @@
 (ns passable.crypto
+  (:import java.util.Arrays)
   (:require [caesium.randombytes :as random]
             [caesium.crypto.box :as box]
             [caesium.util :refer [hexify unhexify]]
@@ -20,21 +21,25 @@
 
 (defn secretbox
   "`secretbox/encrypt` with a random nonce, prepended to the result."
-  [key plaintext]
-  (let [nonce (generate-nonce)]
-    ;; TODO the prepending part
-    (secretbox/encrypt key nonce plaintext)))
+  [secret-key plaintext]
+  (let [nonce (generate-nonce)
+        ciphertext (secretbox/encrypt secret-key nonce plaintext)]
+    (byte-array (concat nonce ciphertext))))
 
 (defn secretbox-open
   "`secretbox/decrypt` where the ciphertext is prefixed with its nonce."
-  [key ciphertext]
-  nil)
+  [secret-key message]
+  (let [nonce (byte-array (Arrays/copyOfRange message 0 secretbox-nonce-length))
+        ciphertext (byte-array (Arrays/copyOfRange message secretbox-nonce-length (alength message)))]
+    (secretbox/decrypt secret-key
+                       nonce
+                       ciphertext)))
 
 (defn zero!
-  "Overwrites mutable byte-array with zeros. 
+  "Overwrites mutable byte-array with zeros.
 
   Returns the same referenced array, having mutated it."
   [^bytes b-array]
   (do
-    (java.util.Arrays/fill b-array (byte 0))
+    (Arrays/fill b-array (byte 0))
     b-array))
