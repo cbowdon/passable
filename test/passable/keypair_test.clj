@@ -16,7 +16,8 @@
         (is (not (or (empty? (:contents (first tasks)))
                      (empty? (:contents (second tasks)))))))))
   (testing "Takes username and home from environment variable if not provided"
-    (binding [*env* {:username "klaus"
+    (binding [*in* (BufferedReader. (StringReader. "codewort1"))
+              *env* {:username "klaus"
                      :home "/home/klaus"}]
       (is (= #{"/home/klaus/.passable/klaus.public-key"
                "/home/klaus/.passable/klaus.secret-key"}
