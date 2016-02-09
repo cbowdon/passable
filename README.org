@@ -3,7 +3,9 @@
 
 *passable* is a password store for development teams featuring authenticated encryption, security groups and audit trails. It is built with libsodium, so you can rest assured that there are /some/ mistakes this author hasn't made.
 
-*This is /alpha/ software. Don't use it for your real secrets.*
+*This is /alpha/ software, written for fun. Don't use it for your real secrets.*
+
+Current status - work in progress!
 
 * Usage
   
@@ -69,4 +71,10 @@ However you still need to make a note of what passwords the users may have seen 
 
 * History
    
-Passable also maintains a full Git repository so that you can read the logs and rollback as needed. You can also add remotes and push/pull changes.
+Passable also maintains a full Git repository via =clj-jgit= so that you can read the logs and rollback as needed. You can also add remotes and push/pull changes.
+
+* Dependencies
+
+This currently depends on my fork of =caesium= with further bindings. This must be installed locally with =lein install=. I've issued a PR so hopefully this is only a temporary situation.
+
+This also depends on =libsodium=. Check your package manager. (On OSX it's available in brew.)
