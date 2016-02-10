@@ -1,6 +1,6 @@
 (ns passable.keypair
   (:require [clojure.java.io :as io]
-            [passable.io :refer [console read-password]]
+            [passable.io :refer [*console* read-password zero!]]
             [passable.crypto :as crypto]))
 
 (defn- public-key
@@ -11,10 +11,13 @@
 
 (defn- secret-key
   [^bytes sk username home]
-  (let [password (read-password console)
+  (let [password (read-password *console*)
+        ;; TODO need to use pwhash 
+        ;; and include salt in encrypted-sk
+        ;; (requires extending caesium)
         encrypted-sk (crypto/secretbox password sk)]
-    (crypto/zero! password)
-    (crypto/zero! sk)
+    (zero! password)
+    (zero! sk)
     encrypted-sk))
 
 (defn keypair

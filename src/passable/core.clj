@@ -1,5 +1,6 @@
 (ns passable.core
   (:require [passable.crypto :refer :all]
+            [passable.io :refer :all]
             [passable.serialization :refer :all])
   (:gen-class))
 

@@ -58,12 +58,3 @@
                  recipient-sk
                  nonce
                  ciphertext)))
-    
-(defn zero!
-  "Overwrites mutable byte-array with zeros.
-
-  Returns the same referenced array, having mutated it."
-  [^bytes b-array]
-  (do
-    (Arrays/fill b-array (byte 0))
-    b-array))

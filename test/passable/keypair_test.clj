@@ -2,11 +2,13 @@
   (:import (java.io BufferedReader
                     StringReader))
   (:require [clojure.test :refer :all]
+            [passable.io :refer [*env* *console*]]
+            [passable.io-test :refer [make-console]]
             [passable.keypair :refer :all]))
 
 (deftest keypair-test
   (testing "Generates two file-creation tasks"
-    (binding [*in* (BufferedReader. (StringReader. "password1"))]
+    (binding [*console* (make-console "password1")]
       (let [tasks (keypair "roger" "/home/roger/")]
         (is (= 2 (count tasks)))
         (is (= '(write-file write-file) (map :task tasks)))
@@ -16,7 +18,7 @@
         (is (not (or (empty? (:contents (first tasks)))
                      (empty? (:contents (second tasks)))))))))
   (testing "Takes username and home from environment variable if not provided"
-    (binding [*in* (BufferedReader. (StringReader. "codewort1"))
+    (binding [*console* (make-console "codewort1")
               *env* {:username "klaus"
                      :home "/home/klaus"}]
       (is (= #{"/home/klaus/.passable/klaus.public-key"
