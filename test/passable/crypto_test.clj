@@ -1,5 +1,6 @@
 (ns passable.crypto-test
   (:require [clojure.test :refer :all]
+            [caesium.crypto.secretbox :refer [key-length]]
             [caesium.util :refer [hexify unhexify array-eq]]
             [passable.crypto :refer :all]))
 
@@ -61,3 +62,12 @@
       (.getBytes "Is this just fantasy?")
       (.getBytes "Caught in a landslide")
       (.getBytes "No escape from reality"))))
+
+
+(deftest derive-secretbox-key-test
+  (testing "Can derive secretbox key with correct length"
+    (are [pw] (= (key-length) (-> (derive-secretbox-key pw)
+                                  (:secret-key)
+                                  (count)))
+      (.getBytes "Mama")
+      (.getBytes "I just killed a man"))))

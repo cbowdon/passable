@@ -1,27 +1,19 @@
 (ns passable.crypto
   (:import java.util.Arrays)
   (:require [caesium.randombytes :as random]
+            [caesium.crypto.pwhash :as pwhash]
             [caesium.crypto.box :as box]
             [caesium.util :refer [hexify unhexify]]
             [caesium.crypto.secretbox :as secretbox]))
 
-;; I had to look up the key and nonce length in the C code:
-;; https://github.com/jedisct1/libsodium/blob/master/src/libsodium/include/sodium/crypto_secretbox_xsalsa20poly1305.h
-;; They are in Kalium though:
-;; https://github.com/abstractj/kalium/blob/master/src/main/java/org/abstractj/kalium/NaCl.java
-;; Should probably add these to caesium too
-(def secretbox-key-length 32)
-(def secretbox-nonce-length 24)
-(def box-nonce-length 24)
-
 (defn generate-secret-key []
-  (random/randombytes secretbox-key-length))
+  (random/randombytes (secretbox/key-length)))
 
 (defn generate-secretbox-nonce []
-  (random/randombytes secretbox-nonce-length))
+  (random/randombytes (secretbox/nonce-length)))
 
 (defn generate-box-nonce []
-  (random/randombytes secretbox-nonce-length))
+  (random/randombytes (secretbox/nonce-length))) ;; secretbox & box nonce length are the same
 
 (defn generate-keypair []
   (box/generate-keypair))
@@ -36,8 +28,8 @@
 (defn secretbox-open
   "`secretbox/decrypt` where the ciphertext is prefixed with its nonce."
   [secret-key message]
-  (let [nonce (byte-array (Arrays/copyOfRange message 0 secretbox-nonce-length))
-        ciphertext (byte-array (Arrays/copyOfRange message secretbox-nonce-length (alength message)))]
+  (let [nonce (byte-array (Arrays/copyOfRange message 0 (secretbox/nonce-length)))
+        ciphertext (byte-array (Arrays/copyOfRange message (secretbox/nonce-length) (alength message)))]
     (secretbox/decrypt secret-key
                        nonce
                        ciphertext)))
@@ -52,9 +44,18 @@
 (defn box-open
   "`box/decrypt` where the ciphertext is prefixed with its nonce."
   [sender-pk recipient-sk message]
-  (let [nonce (byte-array (Arrays/copyOfRange message 0 box-nonce-length))
-        ciphertext (byte-array (Arrays/copyOfRange message box-nonce-length (alength message)))]
+  (let [nonce (byte-array (Arrays/copyOfRange message 0 (secretbox/nonce-length)))
+        ciphertext (byte-array (Arrays/copyOfRange message (secretbox/nonce-length) (alength message)))]
     (box/decrypt sender-pk
                  recipient-sk
                  nonce
                  ciphertext)))
+
+(defn derive-secretbox-key
+  "`pwhash/derive-key` configured for secretbox keys."
+  [password]
+  (let [salt (random/randombytes (pwhash/salt-length))]
+    {:salt salt
+     :secret-key (pwhash/derive-key (secretbox/key-length)
+                                    password
+                                    salt)}))

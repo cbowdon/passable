@@ -2,7 +2,8 @@
   (:import java.nio.CharBuffer
            java.nio.charset.Charset
            java.util.Arrays)
-  (:require [clojure.string :as str]))
+  (:require [clojure.java.io :refer [file]]
+            [clojure.string :as str]))
 
 (defmulti zero!
   "Overwrites mutable array with zeros.
@@ -64,3 +65,6 @@
 (def ^:dynamic *console*
   "The system console (i.e. for getting stdin)."
   (Console.))
+
+(defn make-path [& paths]
+  (.getPath (apply file paths)))

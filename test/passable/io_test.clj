@@ -44,6 +44,6 @@
   (testing "Can mock console"
     (binding [*console* (make-console "test")]
       (is (not (empty? (read-password *console*))))
-      (is (= (seq (.toCharArray "test"))
+      (is (= (seq (.getBytes "test"))
              (seq (read-password *console*)))))))
 

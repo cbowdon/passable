@@ -9,7 +9,7 @@
 (deftest keypair-test
   (testing "Generates two file-creation tasks"
     (binding [*console* (make-console "password1")]
-      (let [tasks (keypair "roger" "/home/roger/")]
+      (let [tasks (keypair "roger" "/Users/roger/")]
         (is (= 2 (count tasks)))
         (is (= '(write-file write-file) (map :task tasks)))
         (is (= #{"/Users/roger/.passable/roger.public-key"
@@ -19,7 +19,7 @@
                      (empty? (:contents (second tasks)))))))))
   (testing "Takes username and home from environment variable if not provided"
     (binding [*console* (make-console "codewort1")
-              *env* {:username "klaus"
+              *env* {:user "klaus"
                      :home "/home/klaus"}]
       (is (= #{"/home/klaus/.passable/klaus.public-key"
                "/home/klaus/.passable/klaus.secret-key"}
