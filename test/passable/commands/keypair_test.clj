@@ -1,10 +1,10 @@
-(ns passable.keypair-test
+(ns passable.commands.keypair-test
   (:import (java.io BufferedReader
                     StringReader))
   (:require [clojure.test :refer :all]
             [passable.io :refer [*env* *console*]]
             [passable.io-test :refer [make-console]]
-            [passable.keypair :refer :all]))
+            [passable.commands.keypair :refer :all]))
 
 (deftest keypair-test
   (testing "Generates two file-creation tasks"

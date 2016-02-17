@@ -1,4 +1,4 @@
-(ns passable.keypair
+(ns passable.commands.keypair
   (:require [clojure.java.io :as io]
             [passable.io :refer [make-path
                                  *env*

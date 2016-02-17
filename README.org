@@ -5,7 +5,7 @@
 
 *This is /alpha/ software, written for fun. Don't use it for your real secrets.*
 
-Current status - +work in progress!+ on ice. Awaiting some upstream changes to land (namely =pwhash= in kalium).
+Current status - work in progress!
 
 * Usage
   
