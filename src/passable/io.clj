@@ -24,7 +24,7 @@
 
 ;; thanks environ!
 ;; https://github.com/weavejester/environ
-(defn- keywordize [s]
+(defn keywordize [s]
   (-> (str/lower-case s)
       (str/replace "_" "-")
       (str/replace "." "-")
