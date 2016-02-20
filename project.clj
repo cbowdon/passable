@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :repositories {"local" ~(str (.toURI (java.io.File. "~/.m2/repository")))}
   :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/tools.cli "0.3.3"]
                  [caesium "0.6.0-SNAPSHOT"]] ;; my fork of caesium is installed locally
   :main ^:skip-aot passable.core
   :target-path "target/%s"

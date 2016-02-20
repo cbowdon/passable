@@ -1,7 +1,7 @@
 #+TITLE: passable
 #+DESCRIPTION: A password store for teams, built on libsodium (NOT READY FOR REAL-WORLD)
 
-*passable* is a password store for development teams featuring authenticated encryption, security groups and audit trails. It is built with libsodium, so you can rest assured that there are /some/ mistakes this author hasn't made.
+=passable= is a password store for development teams featuring authenticated encryption, security groups and audit trails. It is built with libsodium, so you can rest assured that there are /some/ mistakes this author hasn't made.
 
 *This is /alpha/ software, written for fun. Don't use it for your real secrets.*
 
@@ -12,27 +12,25 @@ Current status - work in progress!
 In the examples below, angle brackets denote a parameter for you to provide. Square brackets indicate that a parameter is optional and has a default value as shown.
 
 ** Basic
-1. Generate yourself a nice public and secret-key pair. Choose a password to encrypt your secret-key. The keypair will be saved in =$HOME/.passable=. Be sure not to lose the secret-key or forget your password.
-   
-: passable keypair [<username> = $USER]
 
+Generate yourself a nice public and secret-key pair. Choose a password to encrypt your secret-key. The keypair will be saved in =$HOME/.passable=. Be sure not to lose the secret-key or forget your password.
 It will ask for your password.
+   
+: passable keypair [--user $USER] [--out $HOME/.passable/$USER]
 
-2. Initialize an empty store. It's just a file.
+Initialize an empty store. It's just a file.
 
-: passable init [<path> = $(pwd)/passable_store]
+: passable init [--out $(pwd)/passable_store] [--key $HOME/.passable/$USER]
 
-3. Put some credentials in it. You will be asked for the username, password, and any secret notes or files.
-
-: passable put <title> [<url>]
-
+Put some credentials in it. You will be asked for the username, password, and any secret notes or files. If you don't supply a password, one will be generated.
 =put= will also update existing credentials.
 
-4. Try retrieving those credentials. You will be asked for the password to decrypt your secret-key.
+: passable put <title> [--url]
+
+Try retrieving those credentials. You will be asked for the password to decrypt your secret-key.
+If you haven't forgotten your secret-key password in the last few minutes, you should be rewarded with the credential password you entered just now.
 
 : passable get <title>
-
-If you haven't forgotten your secret-key password in the last few minutes, you should be rewarded with the credential password you entered just now.
 
 You can also view all the details of a given credential.
 
@@ -45,23 +43,23 @@ Or, you can list all the credentials you have access to.
 =ls= will only show the titles and urls in this view, not passwords.
 
 ** Groups
-1. Create a group.
+Create a group.
 
 : passable group <name>
 
-2. Add your friend to the group.
+Add your friend to the group.
 
 : passable join <user> <group>
 
-3. Give the group access to some credentials.
+Give the group access to some credentials.
 
 : passable grant <group> <title>
 
-4. List the credentials the group has access to.
+List the credentials the group has access to.
 
 : passable ls <group>
 
-5. Kick your treacherous friend out of the group.
+Kick your treacherous friend out of the group.
 
 : passable kick <group> <user>
 
