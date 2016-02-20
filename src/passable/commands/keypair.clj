@@ -1,41 +1,30 @@
 (ns passable.commands.keypair
   (:require [clojure.java.io :as io]
             [passable.io :refer [make-path
-                                 *env*
                                  *console*
                                  read-password
                                  zero!]]
             [passable.crypto :as crypto]))
 
-(defn- public-key
-  "Create a public-key file task"
-  [^bytes pk username home]
-  {:task 'write-file
-   :path (make-path home ".passable" (format "%s.public-key" username))
-   :contents pk})
-
-(defn- secret-key
-  "Create an encrypted secret-key file task"
-  [^bytes sk username home]
-  (let [password (read-password *console*)
-        {salt :salt sbk :secret-key} (crypto/derive-secretbox-key password)
-        encrypted-sk (crypto/secretbox sbk sk)]
-    (zero! password)
-    (zero! sk)
-    {:task 'write-file
-     :path (make-path home ".passable" (format "%s.secret-key" username))
-     :contents (byte-array (concat salt encrypted-sk))}))
+(defn- encrypt-secret-key
+  [sk password]
+  (let [{:keys [salt secret-key]} (crypto/derive-secretbox-key password)
+        encrypted-sk (crypto/secretbox secret-key sk)]
+    (byte-array (concat salt encrypted-sk))))
 
 (defn keypair
-  "Creates a new protected keypair in the user's home directory.
+  "Create a new protected keypair file for the user in the given directory.
 
-  Returns unevaluated write-file tasks."
-  ([]
-   (keypair (:user *env*) (:home *env*)))
-  ([username]
-   (keypair (:home *env*)))
-  ([username home]
-   (let [{ pk :public sk :secret } (crypto/generate-keypair)]
-     #{(public-key pk username home)
-       (secret-key sk username home)})))
+  Returns a write-file task."
+  [user dir]
+  (let [{ pk :public sk :secret } (crypto/generate-keypair)
+        password (read-password *console*)
+        encrypted-sk (encrypt-secret-key sk password)]
+    (zero! sk)
+    (zero! password)
+    {:task 'write-file
+     :path (make-path dir ".passable" user)
+     :contents {:user user
+                :public pk
+                :secret encrypted-sk}}))
 

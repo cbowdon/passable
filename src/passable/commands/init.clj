@@ -11,11 +11,7 @@
 
 (defn init
   "Initializes a store file in given directory."
-  [& {:keys [dir user public-key secret-key]
-      :or {dir (:home *env*)
-           user (:user *env*)
-           public-key nil
-           secret-key nil}}]
+  [dir user public-key secret-key]
   {:task 'write-file
    :path (make-path dir ".passable")
    :contents {:data {}
