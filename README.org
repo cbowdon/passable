@@ -12,7 +12,7 @@ Current status - work in progress!
 In the examples below, angle brackets denote a parameter for you to provide. Square brackets indicate that a parameter is optional and has a default value as shown.
 
 ** Basic
-
+   
 Generate yourself a nice public and secret-key pair. Choose a password to encrypt your secret-key. The keypair will be saved in =$HOME/.passable=. Be sure not to lose the secret-key or forget your password.
 It will ask for your password.
    
@@ -43,6 +43,7 @@ Or, you can list all the credentials you have access to.
 =ls= will only show the titles and urls in this view, not passwords.
 
 ** Groups
+
 Create a group.
 
 : passable group <name>
@@ -61,15 +62,11 @@ List the credentials the group has access to.
 
 Kick your treacherous friend out of the group.
 
-: passable kick <group> <user>
+: passable revoke <group> <user>
 
 The group's access keys will be re-encrypted, so your friend can no longer =get=, =show= or =ls= those credentials.
 
 However you still need to make a note of what passwords the users may have seen and change those. That's what =ls= is for.
-
-* History
-   
-Passable also maintains a full Git repository via =clj-jgit= so that you can read the logs and rollback as needed. You can also add remotes and push/pull changes.
 
 * Dependencies
 
