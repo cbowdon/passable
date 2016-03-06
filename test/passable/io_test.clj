@@ -17,6 +17,28 @@
           (byte-array [1 2 3 4 5 6 7 8])
           (byte-array [9 0 1 1 3 0 1 1]))))))
 
+(deftest let-zero-test
+  (testing "Should eval to last form"
+    (let [a (byte-array [1 2 3 4])
+          b (byte-array [1 2 3 4])]
+      (is (let-zero! [a_ a
+                      b_ b]
+            (array-eq a_ b_)))))
+  (testing "Should clear the array when done"
+    (let [zeros (byte-array [0 0 0 0])
+          data (byte-array [1 2 3 4])]
+      (let-zero! [stuff data] nil)
+      (is (array-eq zeros data))))
+  (testing "Should allow and zero multiple bindings"
+    (let [zeros (byte-array [0 0 0 0])
+          a (byte-array [1 2 3 4])
+          b (byte-array [5 6 7 8])]
+      (let-zero! [a_ a
+                  b_ b]
+        nil)
+      (is (array-eq zeros a))
+      (is (array-eq zeros b)))))
+
 (deftest env-test
   (testing "Can mock environment variables easily"
     (binding [*env* {:user "Stan" :home "/home/stan"}]

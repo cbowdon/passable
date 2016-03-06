@@ -22,6 +22,16 @@
     (Arrays/fill b-array (byte 0))
     b-array))
 
+(defmacro let-zero!
+  "Like `let` but with the bound items being mutable arrays that are zeroed after use."
+  [bindings forms]
+  (let [keys# (map #(nth bindings %)
+                   (filter even? (range (count bindings))))]
+    `(let ~bindings
+       (let [result# (do ~forms)]
+         ~@(map (fn [x] `(zero! ~x)) keys#)
+         result#))))
+
 ;; thanks environ!
 ;; https://github.com/weavejester/environ
 (defn keywordize [s]
